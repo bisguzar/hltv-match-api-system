@@ -3,7 +3,9 @@ You can get matches from hltv.org with this project.
 
 # Installation
 You need first install requestments. Run this command if you have installed pip.
+
     sudo pip install bs4
+
 Move "hltvapi.py" file to your main folder.
 
 #How To Use
