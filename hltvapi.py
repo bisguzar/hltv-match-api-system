@@ -60,4 +60,4 @@ def matches():
 			'team2Logo': logos[1]['src'],
 
 		}
-	return maclar
+	return json.dumps(maclar)
