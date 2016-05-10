@@ -75,4 +75,4 @@ def matches():
 		else:
 			print colored('I cant find teams for this match. Skip.', 'blue')
 
-	return json.dumps(maclar)
+	return maclar
