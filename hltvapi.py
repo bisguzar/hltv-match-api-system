@@ -1,6 +1,7 @@
 import requests
 import json
 from bs4 import BeautifulSoup as bs
+from termcolor import colored
 
 hltv = "http://www.hltv.org"
 
@@ -8,7 +9,9 @@ def getLinks():
 	other = {}
 	links = []
 	matches = bs(requests.get(hltv+"/matches/").text)
+	ab = 0
 	for mac in matches.find_all('div', class_="matchListBox"):
+		ab += 1
 		status = mac.find('div', class_="matchTimeCell").text
 		if status == 'Finished':
 			team1 = mac.find('div', class_='matchTeam1Cell')
@@ -17,7 +20,7 @@ def getLinks():
 			if len(score) > 10:
 				score = score[2].strip()
 
-			other[str(team1.text.strip()+' vs '+team2.text.strip())] = {
+			other["a"+str(ab)] = {
 				'status': 'Finished',
 				'team1': str(team1.text.strip()), 
 				'team1Logo': str(team1.find('img')['src']),
@@ -28,10 +31,11 @@ def getLinks():
 		elif status == 'LIVE':
 			team1 = mac.find('div', class_='matchTeam1Cell')
 			team2 = mac.find('div', class_='matchTeam2Cell')
+			score = str(mac.find('div', class_='matchScoreCell').text.strip())
 			if len(score) > 10:
 				score = score[2].strip()
 
-			other[str(team1.text.strip()+' vs '+team2.text.strip())] = {
+			other["a"+str(ab)] = {
 				'status': 'LIVE',
 				'team1': str(team1.text.strip()), 
 				'team1Logo': str(team1.find('img')['src']),
@@ -47,17 +51,23 @@ def matches():
 	returned = getLinks()
 	links = returned[0]
 	maclar = returned[1]
+	a = 0
 	for link in links:
-		match = bs(requests.get(hltv+link).text)
-		date = match.find('div', {'style':'text-align:center;font-size: 18px;display:flex;flex-direction: row;justify-content: center;align-items: center'}).text.strip()
-		teams = match.find_all('a', {'class': 'nolinkstyle'}, text=True)
-		logos= match.find_all('img', {'style': 'vertical-align:-20%;border: 1px solid black;border-radius: 5px;'})
-		maclar[str(teams[0].text+" vs "+teams[1].text)] = {
-			'date': str(date.strip().replace("\n","").strip()), 
-			'team1': teams[0].text,
-			'team1Logo': logos[0]['src'],
-			'team2': teams[1].text,
-			'team2Logo': logos[1]['src'],
+		a += 1
+		print colored('Parsing ', 'green')+colored(str(a),'red')+colored('. match.', 'green')
+		match= bs(requests.get(hltv+link).text)
+		date= match.find('div', {'style':'text-align:center;font-size: 18px;display:flex;flex-direction: row;justify-content: center;align-items: center'}).text.strip()
+		logos= match.find_all('img', {'style': 'vertical-align: -3%; border: 1px solid black; border-radius: 5px; height: 20px;'})
+	
+		team1 = str(match.find('div', {'id': 'voteteam1'}).text)
+		team2 = str(match.find('div', {'id': 'voteteam1'}).text)
 
-		}
-	return json.dumps(maclar)
+		maclar[str(a)] = {
+			'date': str(date.strip().replace("\n","").strip()), 
+			'team1': team1,
+			'team1Logo': logos[0]['src'],
+			'team2': team2,
+			'team2Logo': logos[1]['src'],	
+			}
+
+	return maclar
