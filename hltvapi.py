@@ -59,15 +59,20 @@ def matches():
 		date= match.find('div', {'style':'text-align:center;font-size: 18px;display:flex;flex-direction: row;justify-content: center;align-items: center'}).text.strip()
 		logos= match.find_all('img', {'style': 'vertical-align: -3%; border: 1px solid black; border-radius: 5px; height: 20px;'})
 	
-		team1 = str(match.find('div', {'id': 'voteteam1'}).text)
-		team2 = str(match.find('div', {'id': 'voteteam1'}).text)
+		team1 = match.find('div', {'id': 'voteteam1'})
+		team2 = match.find('div', {'id': 'voteteam1'})
+		if team1 and team2 != None:
+			team1 = str(team1.text)
+			team2 = str(team2.text)
 
-		maclar[str(a)] = {
-			'date': str(date.strip().replace("\n","").strip()), 
-			'team1': team1,
-			'team1Logo': logos[0]['src'],
-			'team2': team2,
-			'team2Logo': logos[1]['src'],	
-			}
+			maclar[str(a)] = {
+				'date': str(date.strip().replace("\n","").strip()), 
+				'team1': team1,
+				'team1Logo': str(logos[0]['src']),
+				'team2': team2,
+				'team2Logo': str(logos[1]['src']),	
+				}
+		else:
+			print colored('I cant find teams for this match. Skip.', 'blue')
 
-	return maclar
+	return json.dumps(maclar)
