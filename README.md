@@ -1,3 +1,6 @@
+OUTDATED
+
+
 # hltv-get-matches
 You can get matches from hltv.org with this project.
 
