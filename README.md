@@ -1,5 +1,5 @@
-OUTDATED
-
+## OUTDATED
+**Take a look to https://github.com/akagna/HLTV-Match-API**
 
 # hltv-get-matches
 You can get matches from hltv.org with this project.
